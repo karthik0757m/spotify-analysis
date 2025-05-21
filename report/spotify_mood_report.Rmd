@@ -1,0 +1,114 @@
+---
+title: "Spotify Mood Analysis"
+author: "Akiti Rishika Reddy"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    number_sections: true
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(tidyverse)
+library(readr)
+library(ggplot2)
+library(viridis)
+library(janitor)
+Introduction
+Music carries emotional depth. With Spotifys audio features dataset, we can explore how moods in music evolve over time and differ across genres. This analysis classifies songs into emotional categories (e.g., Happy, Sad, Party, etc.) using features like valence, energy, and danceability.
+
+Dataset Overview
+We use a cleaned and mood-tagged dataset created from spotify_songs.csv.
+
+{r}
+Copy
+Edit
+spotify_data <- read_csv("output/mood_summary.csv")
+glimpse(spotify_data)
+Mood Classification Logic
+The moods are derived from Spotify’s audio features:
+
+Happy: High valence and high energy
+
+Sad: Low valence and low energy
+
+Party: High valence and high danceability
+
+Angry: Low valence and high energy
+
+Chill: Low valence, low energy, and low danceability
+
+Mixed: All others
+
+Mood Trends Over Time
+This shows how music moods have evolved across years.
+
+{r
+Copy
+Edit
+spotify_data |>
+  count(release_year, mood) |>
+  ggplot(aes(x = release_year, y = n, fill = mood)) +
+  geom_col(position = "dodge") +
+  scale_fill_viridis(discrete = TRUE) +
+  labs(title = "Mood Trends by Year",
+       x = "Year",
+       y = "Number of Songs",
+       fill = "Mood") +
+  theme_minimal()
+Mood Distribution by Genre
+See how moods vary across Spotify playlist genres.
+
+{r
+Copy
+Edit
+spotify_data |>
+  count(playlist_genre, mood) |>
+  ggplot(aes(x = reorder(playlist_genre, -n), y = n, fill = mood)) +
+  geom_col(position = "dodge") +
+  scale_fill_viridis(discrete = TRUE) +
+  labs(title = "Mood Distribution by Genre",
+       x = "Genre",
+       y = "Count",
+       fill = "Mood") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+Sample Top Tracks
+Here are the top 5 most popular tracks in the dataset and their assigned moods.
+
+{r
+Copy
+Edit
+spotify_data |>
+  arrange(desc(track_popularity)) |>
+  select(track_name, track_artist, track_popularity, mood) |>
+  head(5)
+Conclusion
+This report highlights how emotional signals in music shift by year and genre. Music not only entertains but also reflects social and emotional trends over time.
+
+Future ideas:
+
+Include tempo and key for more emotional nuance
+
+Compare across countries or artists
+
+Build interactive dashboards (see Shiny app!)
+
+Report generated from Spotify 2020 dataset via TidyTuesday project.
+
+yaml
+Copy
+Edit
+
+
+---
+
+### ✅ To Render the Report:
+1. Open the `.Rmd` file in RStudio.
+2. Click the **Knit** button (HTML output).
+3. View the report in your browser.
+
+Let me know if youd like a **PDF** version, more **plots**, or if you want this report to automatically run all scripts first!
