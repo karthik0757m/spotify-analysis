@@ -112,7 +112,8 @@ launch_shiny <- function() {
     output$outliersTable <- renderDT({
       filtered_data() |>
         filter(track_popularity > 90) |>
-        select(track_name, track_artist, track_popularity, mood, playlist_genre, release_year)
+        arrange(desc(track_popularity))|>
+        select(track_name, track_artist, track_popularity, mood, playlist_genre, playlist_subgenre, release_year)
     })
     
     output$animatedGif <- renderImage({
